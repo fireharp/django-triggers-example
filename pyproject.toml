@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "django-triggers-example"
+version = "0.1.0"
+description = ""
+authors = ["Alex Yanitskiy <demo.alex@gmail.com>"]
+readme = "README.md"
+packages = [{include = "django_triggers_example"}]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+django = "^4.1.7"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
