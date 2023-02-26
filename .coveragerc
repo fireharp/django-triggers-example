@@ -1,0 +1,11 @@
+[run]
+omit =
+    django_triggers_example/settings.py
+    django_triggers_example/wsgi.py
+    */migrations/*
+    */management/commands/*
+[report]
+exclude_lines =
+    raise NotImplementedError
+[html]
+directory = .test-reports/htmlcov

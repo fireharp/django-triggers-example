@@ -9,6 +9,10 @@ packages = [{include = "django_triggers_example"}]
 [tool.poetry.dependencies]
 python = "^3.8"
 django = "^4.1.7"
+dj-triggers = "^0.10.0"
+pytest = "^7.2.1"
+pytest-django = "^4.5.2"
+pytest-cov = "^4.0.0"
 
 
 [build-system]
