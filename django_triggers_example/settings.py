@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "triggers",
     "core",
     "todos",
+    "todos.triggers",
 ]
 
 MIDDLEWARE = [
