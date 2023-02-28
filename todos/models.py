@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from core.models import TimeStampedModel
+from .triggers.models import TodoIsCompletedEvent
 
 
 class Todo(TimeStampedModel):
@@ -12,3 +13,16 @@ class Todo(TimeStampedModel):
 
     def __str__(self):
         return self.title
+
+    def is_completed(self):
+        return bool(self.date_completed)
+
+    # fire TodoIsCompletedEvent if todo is completed
+    def save(self, *args, **kwargs):
+        is_completed = self.is_completed()
+        super().save(*args, **kwargs)
+
+        if is_completed:
+            event: TodoIsCompletedEvent
+            for event in TodoIsCompletedEvent.objects.all():
+                event.fire_single(self.user_id)

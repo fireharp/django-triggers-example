@@ -291,14 +291,14 @@ toml = ["tomli"]
 
 [[package]]
 name = "dj-triggers"
-version = "0.10.0"
+version = "0.11.0"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.7,<4.0"
 files = [
-    {file = "dj_triggers-0.10.0-py3-none-any.whl", hash = "sha256:154687cac37d9e0d8848fb87ec24dcb2e4c10fbdd442a5c8c4b4e8de664fd366"},
-    {file = "dj_triggers-0.10.0.tar.gz", hash = "sha256:7e15e5d54021c4be672f39a5dab0672aaaa8670fdb567e9bf93babf0142dc26d"},
+    {file = "dj_triggers-0.11.0-py3-none-any.whl", hash = "sha256:5ce1c8a03b5d45dce5b29c5ac75abc15e9c01735e24eaac139eece3d7382b9ce"},
+    {file = "dj_triggers-0.11.0.tar.gz", hash = "sha256:baab5519fe782fe68af5a6e37ef7e5b9fa46f91c732638ae40c06a78e61035bd"},
 ]
 
 [package.dependencies]
@@ -594,4 +594,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "f847af865bf1e383a6cccefc67a7fcfc1569ea8d90087684d43c82428a33d883"
+content-hash = "95af7984961663ac23e7bf0a7f4abcaa8009774acfb936c4df14dfeac2d27e79"
