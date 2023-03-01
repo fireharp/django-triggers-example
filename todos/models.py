@@ -1,28 +1,29 @@
 from django.db import models
 from django.contrib.auth.models import User
 from core.models import TimeStampedModel
-from .triggers.models import TodoIsCompletedEvent
+from .triggers.models import TodoIsFinishedEvent
 
 
 class Todo(TimeStampedModel):
     title = models.CharField(max_length=100)
     memo = models.TextField(blank=True)
-    date_completed = models.DateTimeField(null=True, blank=True)
+    date_finished = models.DateTimeField(null=True, blank=True)
     important = models.BooleanField(default=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='todos')
 
     def __str__(self):
         return self.title
 
-    def is_completed(self):
-        return bool(self.date_completed)
+    def is_finished(self):
+        return bool(self.date_finished)
 
-    # fire TodoIsCompletedEvent if todo is completed
     def save(self, *args, **kwargs):
-        is_completed = self.is_completed()
+        fire_event = False
+        if self.pk is not None:
+            orig = Todo.objects.get(pk=self.pk)
+            if orig.is_finished() != self.is_finished():
+                fire_event = True
         super().save(*args, **kwargs)
-
-        if is_completed:
-            event: TodoIsCompletedEvent
-            for event in TodoIsCompletedEvent.objects.all():
+        if fire_event:
+            for event in TodoIsFinishedEvent.objects.all():
                 event.fire_single(self.user_id)

@@ -1,47 +1,54 @@
+import logging
 from triggers.models import Action, Event, Condition
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 
+logger = logging.getLogger(__name__)
 
-class TodoIsCompletedEvent(Event):
+
+class TodoIsFinishedEvent(Event):
 
     class Meta(Event.Meta):
-        verbose_name = _('todo is completed event')
+        verbose_name = _('todo is finished event')
 
     def __str__(self):
         return f'{super().__str__()}'
 
 
-# @receiver(post_save, sender=Todo)
-# def on_todo_created(sender, instance: Todo, created: bool, **kwargs):
-#     event: TodoIsCompletedEvent
-#     if instance.is_completed():
-#         transaction.on_commit(lambda: [event.fire_single(
-#             instance.user_id,
-#         ) for event in TodoIsCompletedEvent.objects.all()])
-
-
-class CreateTodoAction(Action):
-    some = models.CharField(max_length=100, blank=True)
+class SendEmailAction(Action):
+    email_message = models.TextField(_('email message'), blank=True)
 
     class Meta(Action.Meta):
-        verbose_name = _('create todo action')
+        verbose_name = _('send email action')
 
     def __str__(self):
-        return f'{super().__str__()} {self.some}'
+        return f'{super().__str__()} {self.email_message[:20]}'
 
     def perform(self, user, context):
-        # TODO: implement
-        print("made it!", user, context)
+        logger.debug(f"made it! {user} {context} {self.email_message[:50]}")
 
 
-class TodoIsImportantCondition(Condition):
+class UnfinishedTodosCountCondition(Condition):
+    LOOKUP_EXACT = 'exact'
+    LOOKUP_GTE = 'gte'
+    LOOKUP_CHOICES = (
+        (LOOKUP_EXACT, _('==')),
+        (LOOKUP_GTE, _('>=')),
+    )
+    lookup = models.CharField(_('lookup'), choices=LOOKUP_CHOICES, max_length=8, default=LOOKUP_EXACT)
+    value = models.PositiveIntegerField('value')
+
     class Meta(Condition.Meta):
-        verbose_name = _('todo is important condition')
+        verbose_name = _('unfinished todos count condition')
 
     def __str__(self):
         return f'{super().__str__()}'
 
     def is_satisfied(self, user) -> bool:
-        # TODO: implement
-        return True
+        unfinished_todos_count = user.todos.filter(date_finished__isnull=True).count()
+        if self.lookup == self.LOOKUP_EXACT:
+            return unfinished_todos_count == self.value
+        elif self.lookup == self.LOOKUP_GTE:
+            return unfinished_todos_count >= self.value
+        else:
+            raise ValueError(f'Unknown lookup: {self.lookup}.')
